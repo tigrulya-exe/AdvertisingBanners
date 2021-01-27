@@ -1,4 +1,4 @@
-package ru.manasyan.advertising;
+package ru.manasyan.advertising.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

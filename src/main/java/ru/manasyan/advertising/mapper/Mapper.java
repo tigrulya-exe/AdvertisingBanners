@@ -6,5 +6,7 @@ import ru.manasyan.advertising.data.entities.Identifiable;
 public interface Mapper<E extends Identifiable, D extends Dto> {
     E toEntity(D dto);
 
-    D toDto(E entity);
+    default D toDto(E entity) {
+        return null;
+    }
 }

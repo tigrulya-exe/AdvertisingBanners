@@ -1,15 +1,17 @@
 package ru.manasyan.advertising.data.entities;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
+@Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@Entity
 @Table(name = "Banners")
 public class Banner extends Deletable {
     private String name;
@@ -19,8 +21,6 @@ public class Banner extends Deletable {
 
     @Type(type = "text")
     private String content;
-
-    private boolean isDeleted;
 
     @ManyToOne
     @JoinColumn(name = "categoryId")
