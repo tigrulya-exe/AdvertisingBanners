@@ -10,11 +10,9 @@ import ru.manasyan.advertising.service.CrudService;
 @RestController
 @RequestMapping("/categories")
 public class CategoryController extends AbstractCrudController<Category, CategoryDto> {
-
     public CategoryController(
             CrudService<Category> service,
-            Mapper<Category, CategoryDto> mapper
-    ) {
+            Mapper<Category, CategoryDto> mapper) {
         super(service, mapper);
     }
 }

@@ -9,6 +9,8 @@ import java.util.List;
 @Repository
 public interface CategoryRepository extends SearchableRepository<Category, Integer> {
     @Override
-    @Query("SELECT c from Category c where lower(c.name) like :#{#template}")
+    @Query("select c from Category c " +
+            "where lower(c.name) like :#{#template} " +
+            "and c.isDeleted = false")
     List<Category> search(String template);
 }

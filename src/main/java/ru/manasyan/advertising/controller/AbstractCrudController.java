@@ -1,5 +1,7 @@
 package ru.manasyan.advertising.controller;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +11,7 @@ import ru.manasyan.advertising.mapper.Mapper;
 import ru.manasyan.advertising.service.CrudService;
 
 @RequiredArgsConstructor
+@Getter(AccessLevel.PROTECTED)
 public class AbstractCrudController<E extends Identifiable, D extends Dto> {
     private final CrudService<E> service;
 
@@ -21,7 +24,7 @@ public class AbstractCrudController<E extends Identifiable, D extends Dto> {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping
+    @GetMapping("/search")
     public ResponseEntity<?> search(@RequestParam String template) {
         return ResponseEntity.ok(
                 service.search(template)

@@ -1,5 +1,7 @@
 package ru.manasyan.advertising.service;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +13,7 @@ import ru.manasyan.advertising.repository.SearchableRepository;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Getter(AccessLevel.PROTECTED)
 @Service
 public abstract class AbstractCrudService<E extends Deletable> implements CrudService<E> {
     private final SearchableRepository<E, Integer> repository;
