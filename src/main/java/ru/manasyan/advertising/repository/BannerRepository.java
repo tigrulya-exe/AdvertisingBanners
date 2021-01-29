@@ -1,15 +1,13 @@
 package ru.manasyan.advertising.repository;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.manasyan.advertising.data.entities.Banner;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
 
 @Repository
 public interface BannerRepository extends SearchableRepository<Banner, Integer> {
@@ -21,13 +19,20 @@ public interface BannerRepository extends SearchableRepository<Banner, Integer> 
 
     @Query("select b from Banner b " +
             "where lower(b.category.requestName) like :#{#categoryName} " +
-            "and b.isDeleted = false")
-    Page<Banner> findByCategoryName(String categoryName, Pageable pageable);
+            "and b.isDeleted = false " +
+            "order by b.price desc")
+    Stream<Banner> findMostExpensiveInCategory(String categoryName);
 
-    default Optional<Banner> findMostExpensiveByCategoryName(String categoryName) {
-        return findByCategoryName(
-                categoryName,
-                PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, "price"))
-        ).stream().findAny();
-    }
+    @Query("select b from Banner b " +
+            "join Request r on r.banner.id = b.id " +
+            "where b.isDeleted = false " +
+            "and r.userAgent = :#{#userAgent} " +
+            "and r.ipAddress = :#{#ipAddress} " +
+            "and r.date > :#{#date}"
+    )
+    Set<Banner> findBannersByUserAgentAndIpNewerThan(
+            String userAgent,
+            String ipAddress,
+            LocalDateTime date
+    );
 }

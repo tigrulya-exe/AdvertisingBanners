@@ -5,7 +5,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -21,4 +24,7 @@ public class Category extends Deletable {
     private String name;
 
     private String requestName;
+
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    private Set<Banner> banners;
 }

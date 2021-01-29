@@ -7,6 +7,10 @@ import ru.manasyan.advertising.data.entities.Banner;
 import ru.manasyan.advertising.exceptions.NotFoundException;
 import ru.manasyan.advertising.repository.BannerRepository;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Set;
+
 import static ru.manasyan.advertising.util.Utils.toSearchTemplate;
 
 @Service
@@ -30,13 +34,21 @@ public class BannerService extends AbstractCrudService<Banner> {
             String ipAddress
     ) {
         BannerRepository repository = (BannerRepository) getRepository();
-        Banner banner = repository.findMostExpensiveByCategoryName(
-                toSearchTemplate(categoryRequestName)
-        ).orElseThrow(
-                () -> new NotFoundException("No banners in category: " + categoryRequestName)
+
+        Set<Banner> todaysUserBanners = repository.findBannersByUserAgentAndIpNewerThan(
+                userAgent,
+                ipAddress,
+                LocalDateTime.now().minus(1, ChronoUnit.DAYS)
         );
 
-
-        return null;
+        try (var banners = repository.findMostExpensiveInCategory(
+                toSearchTemplate(categoryRequestName)
+        )) {
+            return banners.dropWhile(todaysUserBanners::contains)
+                    .findFirst()
+                    .orElseThrow(() -> new NotFoundException(
+                            "Banners in category " + categoryRequestName + " not found"
+                    ));
+        }
     }
 }
