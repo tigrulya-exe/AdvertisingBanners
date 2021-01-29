@@ -10,6 +10,8 @@ import ru.manasyan.advertising.data.entities.Identifiable;
 import ru.manasyan.advertising.mapper.Mapper;
 import ru.manasyan.advertising.service.CrudService;
 
+import javax.validation.Valid;
+
 @RequiredArgsConstructor
 @Getter(AccessLevel.PROTECTED)
 public class AbstractCrudController<E extends Identifiable, D extends Dto> {
@@ -17,9 +19,12 @@ public class AbstractCrudController<E extends Identifiable, D extends Dto> {
 
     private final Mapper<E, D> mapper;
 
-    // TODO: add validation
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody D dto) {
+    public ResponseEntity<?> create(
+            @RequestBody
+            @Valid
+            D dto
+    ) {
         service.add(mapper.toEntity(dto));
         return ResponseEntity.ok().build();
     }
@@ -32,7 +37,11 @@ public class AbstractCrudController<E extends Identifiable, D extends Dto> {
     }
 
     @PutMapping
-    public ResponseEntity<?> update(@RequestBody D dto) {
+    public ResponseEntity<?> update(
+            @RequestBody
+            @Valid
+            D dto
+    ) {
         service.update(mapper.toEntity(dto));
         return ResponseEntity.ok().build();
     }
