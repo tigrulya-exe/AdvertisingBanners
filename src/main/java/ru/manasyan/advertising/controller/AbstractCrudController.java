@@ -39,6 +39,17 @@ public abstract class AbstractCrudController<E extends Identifiable, D extends D
         );
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> get(
+            @PathVariable int id
+    ) {
+        return ResponseEntity.ok(
+                mapper.toDto(
+                        service.getById(id)
+                )
+        );
+    }
+
     @PutMapping
     public ResponseEntity<?> update(
             @RequestBody

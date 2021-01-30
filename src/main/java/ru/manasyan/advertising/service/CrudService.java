@@ -10,5 +10,7 @@ public interface CrudService<E extends Identifiable> {
 
     void update(E entity);
 
+    E getById(int id);
+
     Iterable<SearchInfo> search(String template);
 }

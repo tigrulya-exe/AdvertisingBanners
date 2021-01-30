@@ -38,10 +38,11 @@ public abstract class AbstractCrudService<E extends Deletable> implements CrudSe
         if (!repository.existsById(entity.getId())) {
             throw new NotFoundException("Wrong id: " + entity.getId());
         }
-        validate(entity);
+//        validate(entity);
         repository.save(entity);
     }
 
+    @Override
     public E getById(int id) {
         return repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Wrong id: " + id));

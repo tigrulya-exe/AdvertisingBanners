@@ -15,7 +15,7 @@ public class BannerMapper implements Mapper<Banner, BannerDto> {
 
     @Override
     public Banner toEntity(BannerDto dto) {
-        return Banner.builder()
+        Banner banner = Banner.builder()
                 .content(dto.getContent())
                 .name(dto.getName())
                 .category(categoryService.getById(
@@ -25,6 +25,22 @@ public class BannerMapper implements Mapper<Banner, BannerDto> {
                         dto.getPrice()
                 ))
                 .build();
+
+        if (dto.getId() != null) {
+            banner.setId(dto.getId());
+        }
+        return banner;
+    }
+
+    @Override
+    public BannerDto toDto(Banner entity) {
+        return new BannerDto(
+                entity.getId(),
+                entity.getName(),
+                entity.getPrice().floatValue(),
+                entity.getCategory().getId(),
+                entity.getContent()
+        );
     }
 
 }

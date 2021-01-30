@@ -10,9 +10,23 @@ import ru.manasyan.advertising.data.entities.Category;
 public class CategoryMapper implements Mapper<Category, CategoryDto> {
     @Override
     public Category toEntity(CategoryDto dto) {
-        return new Category(
+        Category category = new Category(
                 dto.getName(),
                 dto.getRequestName()
+        );
+
+        if (dto.getId() != null) {
+            category.setId(dto.getId());
+        }
+        return category;
+    }
+
+    @Override
+    public CategoryDto toDto(Category entity) {
+        return new CategoryDto(
+                entity.getId(),
+                entity.getName(),
+                entity.getRequestName()
         );
     }
 }
