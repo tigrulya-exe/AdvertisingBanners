@@ -14,7 +14,7 @@ import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @Getter(AccessLevel.PROTECTED)
-public class AbstractCrudController<E extends Identifiable, D extends Dto> {
+public abstract class AbstractCrudController<E extends Identifiable, D extends Dto> {
     private final CrudService<E> service;
 
     private final Mapper<E, D> mapper;
@@ -30,7 +30,10 @@ public class AbstractCrudController<E extends Identifiable, D extends Dto> {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> search(@RequestParam String template) {
+    public ResponseEntity<?> search(
+            @RequestParam(required = false)
+            String template
+    ) {
         return ResponseEntity.ok(
                 service.search(template)
         );

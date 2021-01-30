@@ -3,6 +3,7 @@ package ru.manasyan.advertising.data.entities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,5 +27,6 @@ public class Category extends Deletable {
     private String requestName;
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    @Where(clause = "isDeleted = false")
     private Set<Banner> banners;
 }

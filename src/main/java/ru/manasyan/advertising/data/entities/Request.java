@@ -1,7 +1,6 @@
 package ru.manasyan.advertising.data.entities;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Entity;
@@ -10,9 +9,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 @Table(name = "Requests")
 public class Request extends Identifiable {
     @Type(type = "text")

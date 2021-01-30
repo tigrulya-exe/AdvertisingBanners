@@ -9,6 +9,7 @@ import ru.manasyan.advertising.data.dto.SearchInfo;
 import ru.manasyan.advertising.data.entities.Deletable;
 import ru.manasyan.advertising.exceptions.NotFoundException;
 import ru.manasyan.advertising.repository.SearchableRepository;
+import ru.manasyan.advertising.util.Utils;
 
 import java.util.stream.Collectors;
 
@@ -20,6 +21,7 @@ public abstract class AbstractCrudService<E extends Deletable> implements CrudSe
 
     @Override
     public void add(E entity) {
+        validate(entity);
         repository.save(entity);
     }
 
@@ -36,6 +38,7 @@ public abstract class AbstractCrudService<E extends Deletable> implements CrudSe
         if (!repository.existsById(entity.getId())) {
             throw new NotFoundException("Wrong id: " + entity.getId());
         }
+        validate(entity);
         repository.save(entity);
     }
 
@@ -46,11 +49,13 @@ public abstract class AbstractCrudService<E extends Deletable> implements CrudSe
 
     @Override
     public Iterable<SearchInfo> search(String template) {
-        return repository.search("%" + template + "%")
+        return repository.search(Utils.toSearchTemplate(template))
                 .stream()
                 .map(this::toSearchInfo)
                 .collect(Collectors.toList());
     }
+
+    protected abstract void validate(E entity);
 
     protected abstract SearchInfo toSearchInfo(E entity);
 }

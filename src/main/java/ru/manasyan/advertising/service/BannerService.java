@@ -4,19 +4,29 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.manasyan.advertising.data.dto.SearchInfo;
 import ru.manasyan.advertising.data.entities.Banner;
+import ru.manasyan.advertising.exceptions.AlreadyExistsException;
 import ru.manasyan.advertising.exceptions.NotFoundException;
 import ru.manasyan.advertising.repository.BannerRepository;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Set;
-
-import static ru.manasyan.advertising.util.Utils.toSearchTemplate;
 
 @Service
 public class BannerService extends AbstractCrudService<Banner> {
-    public BannerService(BannerRepository repository) {
+    private final RequestService requestService;
+
+    public BannerService(
+            BannerRepository repository,
+            RequestService requestService
+    ) {
         super(repository);
+        this.requestService = requestService;
+    }
+
+    @Override
+    protected void validate(Banner entity) {
+        if (getRepository().existsByName(entity.getName())) {
+            throw new AlreadyExistsException("name");
+        }
     }
 
     @Override
@@ -33,22 +43,29 @@ public class BannerService extends AbstractCrudService<Banner> {
             String userAgent,
             String ipAddress
     ) {
-        BannerRepository repository = (BannerRepository) getRepository();
-
-        Set<Banner> todaysUserBanners = repository.findBannersByUserAgentAndIpNewerThan(
+        BannerRepository repository = getRepository();
+        Set<Banner> todaysUserBanners = requestService.findTodaysUserBanners(
+                categoryRequestName,
                 userAgent,
-                ipAddress,
-                LocalDateTime.now().minus(1, ChronoUnit.DAYS)
+                ipAddress
         );
 
         try (var banners = repository.findMostExpensiveInCategory(
-                toSearchTemplate(categoryRequestName)
+                categoryRequestName
         )) {
-            return banners.dropWhile(todaysUserBanners::contains)
+            Banner banner = banners.dropWhile(todaysUserBanners::contains)
                     .findFirst()
                     .orElseThrow(() -> new NotFoundException(
                             "Banners in category " + categoryRequestName + " not found"
                     ));
+
+            requestService.create(banner, userAgent, ipAddress);
+            return banner;
         }
+    }
+
+    @Override
+    protected BannerRepository getRepository() {
+        return (BannerRepository) super.getRepository();
     }
 }
