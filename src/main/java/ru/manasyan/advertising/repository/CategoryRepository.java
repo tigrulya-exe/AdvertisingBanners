@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import ru.manasyan.advertising.data.entities.Category;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CategoryRepository extends SearchableRepository<Category, Integer> {
@@ -13,8 +14,7 @@ public interface CategoryRepository extends SearchableRepository<Category, Integ
             "where lower(c.name) like :#{#template} " +
             "and c.isDeleted = false")
     List<Category> search(String template);
+    Optional<Category> findByName(String name);
 
-    boolean existsByName(String name);
-
-    boolean existsByRequestName(String requestName);
+    Optional<Category> findByRequestName(String requestName);
 }

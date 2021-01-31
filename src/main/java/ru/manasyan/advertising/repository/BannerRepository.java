@@ -7,6 +7,7 @@ import ru.manasyan.advertising.data.entities.Banner;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -51,5 +52,5 @@ public interface BannerRepository extends SearchableRepository<Banner, Integer> 
         );
     }
 
-    boolean existsByName(String name);
+    Optional<Banner> findByName(String name);
 }

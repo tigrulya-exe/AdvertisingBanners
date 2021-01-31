@@ -35,7 +35,7 @@ public class BaseExceptionHandler {
         FieldError fieldError = exc.getFieldError();
         return error(
                 ErrorDto.ErrorType.VALIDATION_FAIL,
-                fieldError == null ? "" : fieldError.getField()
+                fieldError == null ? "" : "Validation failed in field: " + fieldError.getField()
         );
     }
 

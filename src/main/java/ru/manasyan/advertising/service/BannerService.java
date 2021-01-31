@@ -23,13 +23,6 @@ public class BannerService extends AbstractCrudService<Banner> {
     }
 
     @Override
-    protected void validate(Banner entity) {
-        if (getRepository().existsByName(entity.getName())) {
-            throw new AlreadyExistsException("name");
-        }
-    }
-
-    @Override
     protected SearchInfo toSearchInfo(Banner entity) {
         return new SearchInfo(
                 entity.getId(),
@@ -62,6 +55,17 @@ public class BannerService extends AbstractCrudService<Banner> {
             requestService.create(banner, userAgent, ipAddress);
             return banner;
         }
+    }
+
+    @Override
+    protected void validate(Banner entity) {
+        getRepository().findByName(entity.getName())
+                .filter(c -> c.getId() != entity.getId())
+                .ifPresent(c -> {
+                    throw new AlreadyExistsException(
+                            "name", entity.getName()
+                    );
+                });
     }
 
     @Override

@@ -11,6 +11,7 @@ import ru.manasyan.advertising.exceptions.CategoryDeleteException;
 import ru.manasyan.advertising.repository.CategoryRepository;
 
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,16 +20,18 @@ public class CategoryService extends AbstractCrudService<Category> {
         super(repository);
     }
 
+    @Transactional
     @Override
-    protected void validate(Category entity) {
-        CategoryRepository repository = (CategoryRepository) getRepository();
-        if (repository.existsByName(entity.getName())) {
-            throw new AlreadyExistsException("name");
+    public void delete(int id) {
+        Set<Banner> banners = getById(id).getBanners();
+        if (!banners.isEmpty()) {
+            throw new CategoryDeleteException(
+                    banners.stream()
+                            .map(Identifiable::getId)
+                            .collect(Collectors.toSet())
+            );
         }
-
-        if (repository.existsByRequestName(entity.getRequestName())) {
-            throw new AlreadyExistsException("requestName");
-        }
+        super.delete(id);
     }
 
     @Override
@@ -39,17 +42,30 @@ public class CategoryService extends AbstractCrudService<Category> {
         );
     }
 
-    @Transactional
     @Override
-    public void delete(int id) {
-        Set<Banner> banners = getById(id).getBanners();
-        if (!banners.isEmpty()) {
-            throw new CategoryDeleteException(
-                banners.stream()
-                        .map(Identifiable::getId)
-                        .collect(Collectors.toSet())
-            );
-        }
-        super.delete(id);
+    protected CategoryRepository getRepository() {
+        return (CategoryRepository) super.getRepository();
+    }
+
+    @Override
+    protected void validate(Category entity) {
+        CategoryRepository repository = getRepository();
+        Predicate<Category> predicate = c -> c.getId() != entity.getId();
+
+        repository.findByName(entity.getName())
+                .filter(predicate)
+                .ifPresent(c -> {
+                    throw new AlreadyExistsException(
+                            "name", entity.getName()
+                    );
+                });
+
+        repository.findByName(entity.getRequestName())
+                .filter(predicate)
+                .ifPresent(c -> {
+                    throw new AlreadyExistsException(
+                            "requestName", entity.getRequestName()
+                    );
+                });
     }
 }
