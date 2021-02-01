@@ -17,8 +17,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class CategoryService extends AbstractCrudService<Category> {
+    private static final String ENTITY_NAME = "Category";
+
     public CategoryService(CategoryRepository repository) {
-        super(repository);
+        super(repository, ENTITY_NAME);
     }
 
     @Transactional

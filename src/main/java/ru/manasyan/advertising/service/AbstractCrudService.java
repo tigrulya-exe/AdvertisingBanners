@@ -3,6 +3,7 @@ package ru.manasyan.advertising.service;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.manasyan.advertising.data.dto.SearchInfo;
@@ -13,16 +14,20 @@ import ru.manasyan.advertising.util.Utils;
 
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Getter(AccessLevel.PROTECTED)
 @Service
 public abstract class AbstractCrudService<E extends Deletable> implements CrudService<E> {
     private final SearchableRepository<E, Integer> repository;
 
+    private final String entityName;
+
     @Override
     public void add(E entity) {
         validate(entity);
-        repository.save(entity);
+        int entityId = repository.save(entity).getId();
+        log.info("{} #{} was added", entityName, entityId);
     }
 
     @Override
@@ -30,6 +35,7 @@ public abstract class AbstractCrudService<E extends Deletable> implements CrudSe
     public void delete(int id) {
         E entity = getById(id);
         entity.setDeleted(true);
+        log.info("{} #{} was deleted", entityName, id);
     }
 
     @Override
@@ -40,6 +46,7 @@ public abstract class AbstractCrudService<E extends Deletable> implements CrudSe
         }
         validate(entity);
         repository.save(entity);
+        log.info("{} #{} was updated", entityName, entity.getId());
     }
 
     @Override

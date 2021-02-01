@@ -1,5 +1,6 @@
 package ru.manasyan.advertising.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.manasyan.advertising.data.dto.SearchInfo;
@@ -10,15 +11,18 @@ import ru.manasyan.advertising.repository.BannerRepository;
 
 import java.util.Set;
 
+@Slf4j
 @Service
 public class BannerService extends AbstractCrudService<Banner> {
+    private static final String ENTITY_NAME = "Banner";
+
     private final RequestService requestService;
 
     public BannerService(
             BannerRepository repository,
             RequestService requestService
     ) {
-        super(repository);
+        super(repository, ENTITY_NAME);
         this.requestService = requestService;
     }
 
@@ -36,6 +40,13 @@ public class BannerService extends AbstractCrudService<Banner> {
             String userAgent,
             String ipAddress
     ) {
+        log.info(
+                "{} banner request by [{}, {}]",
+                categoryRequestName,
+                userAgent,
+                ipAddress
+        );
+
         BannerRepository repository = getRepository();
         Set<Banner> todaysUserBanners = requestService.findTodaysUserBanners(
                 categoryRequestName,
@@ -51,8 +62,8 @@ public class BannerService extends AbstractCrudService<Banner> {
                     .orElseThrow(() -> new NoMoreBannersException(
                             categoryRequestName
                     ));
-
             requestService.create(banner, userAgent, ipAddress);
+            log.info("Successful request: return banner #{}", banner.getId());
             return banner;
         }
     }

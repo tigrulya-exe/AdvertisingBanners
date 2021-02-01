@@ -1,5 +1,6 @@
 package ru.manasyan.advertising;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -14,6 +15,7 @@ import ru.manasyan.advertising.exceptions.CategoryRemovalException;
 import ru.manasyan.advertising.exceptions.NoMoreBannersException;
 import ru.manasyan.advertising.exceptions.NotFoundException;
 
+@Slf4j
 @ControllerAdvice
 public class BaseExceptionHandler {
 
@@ -26,7 +28,7 @@ public class BaseExceptionHandler {
     public ResponseEntity<ErrorDto> handleNotFound(NotFoundException exc) {
         return error(
                 ErrorDto.ErrorType.NOT_FOUND,
-                exc.getMessage()
+                exc.getLocalizedMessage()
         );
     }
 
@@ -34,7 +36,7 @@ public class BaseExceptionHandler {
     public ResponseEntity<ErrorDto> handleAlreadyExists(AlreadyExistsException exc) {
         return error(
                 ErrorDto.ErrorType.ALREADY_EXISTS,
-                exc.getMessage()
+                exc.getLocalizedMessage()
         );
     }
 
@@ -51,7 +53,7 @@ public class BaseExceptionHandler {
     public ResponseEntity<ErrorDto> handleCategoryDelete(CategoryRemovalException exc) {
         return error(
                 ErrorDto.ErrorType.CATEGORY_DELETE,
-                exc.getMessage()
+                exc.getLocalizedMessage()
         );
     }
 
@@ -64,6 +66,7 @@ public class BaseExceptionHandler {
     }
 
     private ResponseEntity<ErrorDto> error(ErrorDto.ErrorType type, String message) {
+        log.error("Error: [{}] : {}", type, message);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorDto(
                         type,

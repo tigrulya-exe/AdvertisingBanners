@@ -44,9 +44,7 @@ public abstract class AbstractCrudController<E extends Identifiable, D extends D
             @PathVariable int id
     ) {
         return ResponseEntity.ok(
-                mapper.toDto(
-                        service.getById(id)
-                )
+                mapper.toDto(service.getById(id))
         );
     }
 
