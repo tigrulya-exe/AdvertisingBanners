@@ -3,6 +3,8 @@ spring:
     url: jdbc:mysql://${DB_HOSTNAME:localhost}:${DB_PORT:3306}/${DB_NAME:advertising_banners}
     username: ${DB_USERNAME:banners_user}
     password: ${DB_PASSWORD:banners_user_password}
+    hikari:
+      initializationFailTimeout: 0
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
