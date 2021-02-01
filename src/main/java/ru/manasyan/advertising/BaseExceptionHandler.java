@@ -6,13 +6,20 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import ru.manasyan.advertising.data.dto.ContentDto;
 import ru.manasyan.advertising.data.dto.ErrorDto;
 import ru.manasyan.advertising.exceptions.AlreadyExistsException;
-import ru.manasyan.advertising.exceptions.CategoryDeleteException;
+import ru.manasyan.advertising.exceptions.CategoryRemovalException;
+import ru.manasyan.advertising.exceptions.NoMoreBannersException;
 import ru.manasyan.advertising.exceptions.NotFoundException;
 
 @ControllerAdvice
 public class BaseExceptionHandler {
+
+    @ExceptionHandler(NoMoreBannersException.class)
+    public ResponseEntity<ContentDto> handleNoMoreBanners() {
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorDto> handleNotFound(NotFoundException exc) {
@@ -39,8 +46,8 @@ public class BaseExceptionHandler {
         );
     }
 
-    @ExceptionHandler(CategoryDeleteException.class)
-    public ResponseEntity<ErrorDto> handleCategoryDelete(CategoryDeleteException exc) {
+    @ExceptionHandler(CategoryRemovalException.class)
+    public ResponseEntity<ErrorDto> handleCategoryDelete(CategoryRemovalException exc) {
         return error(
                 ErrorDto.ErrorType.CATEGORY_DELETE,
                 exc.getMessage()

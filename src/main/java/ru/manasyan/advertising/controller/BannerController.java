@@ -34,6 +34,6 @@ public class BannerController extends AbstractCrudController<Banner, BannerDto> 
                 request.getHeader(HttpHeaders.USER_AGENT),
                 request.getRemoteAddr()
         );
-        return new ContentDto(banner.getName());
+        return new ContentDto(banner.getContent());
     }
 }

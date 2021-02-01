@@ -5,10 +5,10 @@ import lombok.Getter;
 import java.util.Set;
 
 @Getter
-public class CategoryDeleteException extends RuntimeException {
+public class CategoryRemovalException extends RuntimeException {
     private final Set<Integer> bannerIds;
 
-    public CategoryDeleteException(Set<Integer> bannerIds) {
+    public CategoryRemovalException(Set<Integer> bannerIds) {
         super(bannerIds.toString());
         this.bannerIds = bannerIds;
     }

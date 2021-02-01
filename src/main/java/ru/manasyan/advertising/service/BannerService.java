@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.manasyan.advertising.data.dto.SearchInfo;
 import ru.manasyan.advertising.data.entities.Banner;
 import ru.manasyan.advertising.exceptions.AlreadyExistsException;
-import ru.manasyan.advertising.exceptions.NotFoundException;
+import ru.manasyan.advertising.exceptions.NoMoreBannersException;
 import ru.manasyan.advertising.repository.BannerRepository;
 
 import java.util.Set;
@@ -48,8 +48,8 @@ public class BannerService extends AbstractCrudService<Banner> {
         )) {
             Banner banner = banners.dropWhile(todaysUserBanners::contains)
                     .findFirst()
-                    .orElseThrow(() -> new NotFoundException(
-                            "Banners in category " + categoryRequestName + " not found"
+                    .orElseThrow(() -> new NoMoreBannersException(
+                            categoryRequestName
                     ));
 
             requestService.create(banner, userAgent, ipAddress);
