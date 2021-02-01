@@ -5,11 +5,29 @@ services:
     image: mysql:5.7
     restart: always
     environment:
-      MYSQL_DATABASE: 'advertising_banners'
-      MYSQL_USER: 'banners_user'
-      MYSQL_PASSWORD: 'banners_user_password'
-      MYSQL_ROOT_PASSWORD: 'test_root'
+      MYSQL_DATABASE: advertising_banners
+      MYSQL_USER: banners_user
+      MYSQL_PASSWORD: banners_user_password
+      MYSQL_ROOT_PASSWORD: test_root
     ports:
       - 3306:3306
     expose:
       - 3306
+
+  advertising-banner-back:
+    image: tigrulya/advertising-banner-back
+    depends_on:
+      - mysql
+    ports:
+      - 8080:8080
+    environment:
+      DB_USERNAME: banners_user
+      DB_PASSWORD: banners_user_password
+      DB_HOSTNAME: mysql
+
+  advertising-banner-frot:
+    image: tigrulya/advertising-banner-front
+    depends_on:
+      - advertising-banner-back
+    ports:
+      - 80:80
