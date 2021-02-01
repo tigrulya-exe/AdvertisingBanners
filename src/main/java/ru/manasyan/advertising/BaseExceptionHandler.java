@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.manasyan.advertising.data.dto.ContentDto;
@@ -51,6 +52,14 @@ public class BaseExceptionHandler {
         return error(
                 ErrorDto.ErrorType.CATEGORY_DELETE,
                 exc.getMessage()
+        );
+    }
+
+    @ExceptionHandler(ServletRequestBindingException.class)
+    public ResponseEntity<ErrorDto> handleBindingError(ServletRequestBindingException exc) {
+        return error(
+                ErrorDto.ErrorType.VALIDATION_FAIL,
+                exc.getLocalizedMessage()
         );
     }
 
