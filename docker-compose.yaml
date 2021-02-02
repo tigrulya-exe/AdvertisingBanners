@@ -28,9 +28,11 @@ services:
     expose:
       - 8080
 
-  advertising-banner-frot:
+  advertising-banner-front:
     image: tigrulya/advertising-banner-front
     depends_on:
       - advertising-banner-back
     ports:
       - 80:80
+    expose:
+      - 80
