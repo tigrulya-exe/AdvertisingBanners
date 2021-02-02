@@ -6,8 +6,6 @@ import ru.manasyan.advertising.data.dto.BannerDto;
 import ru.manasyan.advertising.data.entities.Banner;
 import ru.manasyan.advertising.service.CategoryService;
 
-import java.math.BigDecimal;
-
 @RequiredArgsConstructor
 @Component
 public class BannerMapper implements Mapper<Banner, BannerDto> {
@@ -21,9 +19,7 @@ public class BannerMapper implements Mapper<Banner, BannerDto> {
                 .category(categoryService.getById(
                         dto.getCategoryId()
                 ))
-                .price(BigDecimal.valueOf(
-                        dto.getPrice()
-                ))
+                .price(dto.getPrice())
                 .build();
 
         if (dto.getId() != null) {
@@ -37,7 +33,7 @@ public class BannerMapper implements Mapper<Banner, BannerDto> {
         return new BannerDto(
                 entity.getId(),
                 entity.getName(),
-                entity.getPrice().floatValue(),
+                entity.getPrice(),
                 entity.getCategory().getId(),
                 entity.getContent()
         );

@@ -2,9 +2,8 @@ package ru.manasyan.advertising.data.dto;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
+import java.math.BigDecimal;
 
 @Data
 public class BannerDto implements Dto {
@@ -14,8 +13,9 @@ public class BannerDto implements Dto {
     @NotEmpty
     private final String name;
 
-    @NotNull
-    private final Float price;
+    @Digits(integer = 6, fraction = 2)
+    @DecimalMin(value = "0.00")
+    private final BigDecimal price;
 
     @NotNull
     private final Integer categoryId;

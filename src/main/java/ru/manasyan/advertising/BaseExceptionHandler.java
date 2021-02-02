@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.manasyan.advertising.data.dto.ContentDto;
@@ -14,6 +13,8 @@ import ru.manasyan.advertising.exceptions.AlreadyExistsException;
 import ru.manasyan.advertising.exceptions.CategoryRemovalException;
 import ru.manasyan.advertising.exceptions.NoMoreBannersException;
 import ru.manasyan.advertising.exceptions.NotFoundException;
+
+import javax.servlet.ServletException;
 
 @Slf4j
 @ControllerAdvice
@@ -57,8 +58,8 @@ public class BaseExceptionHandler {
         );
     }
 
-    @ExceptionHandler(ServletRequestBindingException.class)
-    public ResponseEntity<ErrorDto> handleBindingError(ServletRequestBindingException exc) {
+    @ExceptionHandler(ServletException.class)
+    public ResponseEntity<ErrorDto> handleBindingError(ServletException exc) {
         return error(
                 ErrorDto.ErrorType.VALIDATION_FAIL,
                 exc.getLocalizedMessage()
@@ -66,7 +67,7 @@ public class BaseExceptionHandler {
     }
 
     private ResponseEntity<ErrorDto> error(ErrorDto.ErrorType type, String message) {
-        log.error("Error: [{}] : {}", type, message);
+        log.error("[{}] : {}", type, message);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorDto(
                         type,
