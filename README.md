@@ -16,6 +16,7 @@ To run ABS you need:
     docker-compose pull && docker-compose up -d
     ```
     to run service in detached mode.
+4. Open http://localhost:80 
 ## Stop service
 To stop UBS run following command in directory, containing docker-compose.yaml
 ```bash
